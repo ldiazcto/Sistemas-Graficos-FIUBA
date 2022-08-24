@@ -1,0 +1,217 @@
+<!doctype html>
+<html>
+<head>
+    <title>Ejemplo 02 VBO</title>
+    <style>
+        body{ 
+            background-color: grey; 
+            font-family:Arial, Helvetica, sans-serif;                
+        }
+        canvas{ 
+            background-color: white; 
+        }
+        textarea{ 
+            background-color: black; 
+            background-color: white;
+        }
+        #titulo{
+            text-align:center;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="titulo">		
+
+        <h1>Sistemas Gráficos</h1>
+        
+        <h2>WebGL Ejemplo 02 - Vertex Array Objects "VBOs"</h2>
+
+        <canvas id="my-canvas" width="900" height="500">
+            Your browser does not support the HTML5 canvas element.
+        </canvas>			
+
+    </div>
+
+    <!-- ************       vertex shader        ***************** !-->
+    <!-- sombreador de vertices -->
+    <!-- reciben la informacion de los vertices pos y colores y la vanba manipular  -->
+    
+    <!-- vec3 en aVertexPosition por 3 dimensiones -->
+    <script id="shader-vs" type="x-shader/x-vertex">
+        attribute vec3 aVertexPosition; 
+        attribute vec3 aVertexColor;
+
+        varying highp vec4 vColor;
+
+        void main(void) {
+            gl_Position = vec4(aVertexPosition, 0.60);
+            vColor = vec4(aVertexColor, 1.0);
+        }
+    </script>
+
+    <!-- ************       fragment shader       **************** !-->        
+
+    <script id="shader-fs" type="x-shader/x-fragment">
+        varying highp vec4 vColor;
+        void main(void) {
+            gl_FragColor = vColor;
+        }
+    </script>
+
+    <script>
+
+        var gl = null,
+            canvas = null,
+            glProgram = null,
+            fragmentShader = null,
+            vertexShader = null;
+            
+        var vertexPositionAttribute = null,
+            trianglesVerticeBuffer = null,
+            vertexColorAttribute = null,
+            trianglesColorBuffer = null;
+            
+        function initWebGL(){
+
+            canvas = document.getElementById("my-canvas");  
+            try{
+                gl = canvas.getContext("webgl");                    
+            } catch(e) {
+                alert("Error al obtener el contexto");
+            }
+
+            if(gl){
+
+                setupWebGL(); //configuro nuestro entorno GL
+                initShaders(); //
+                setupBuffers(); //donde cargamos info que queremos trabajar
+                drawScene();    //operacion de dibujado 
+                
+            }else{    
+                alert("Error: Su browser no soporta WebGL.");
+            }   
+
+        }
+        
+        function setupWebGL(){ //inicializa la pantalla con color de fondo 
+
+            //set the clear color
+            gl.clearColor(0.1, 0.1, 0.2, 1.0);     
+            gl.clear(gl.COLOR_BUFFER_BIT);     
+            
+            gl.viewport(0, 0, canvas.width, canvas.height); //zona de dibuhjo
+            //viweport si quiero dibujar en un area parcial 
+
+        }
+        
+        function initShaders(){
+            //los shaders son progrmas que se ejecutan en  la gpu (procesador grafico, s eencarga de ejecutar programas
+            //que manejan datos para generar una imagen en pantalla, y la forma es a traves de ) 
+
+            //get shader source
+            var fs_source = document.getElementById('shader-fs').innerHTML,
+                vs_source = document.getElementById('shader-vs').innerHTML;
+
+            //compile shaders    
+            vertexShader = makeShader(vs_source, gl.VERTEX_SHADER); //pq el procsador grafico tiene que recibir un codigo ejecutable
+                                                    //procesa los vertices 
+            fragmentShader = makeShader(fs_source, gl.FRAGMENT_SHADER); //procesa los fragmentos
+            
+            //create program
+            glProgram = gl.createProgram();
+            
+            //attach and link shaders to the program
+            //los unimos y los linkeamos
+            gl.attachShader(glProgram, vertexShader);
+            gl.attachShader(glProgram, fragmentShader);
+            gl.linkProgram(glProgram);
+
+            if (!gl.getProgramParameter(glProgram, gl.LINK_STATUS)) {
+                alert("Unable to initialize the shader program.");
+            }
+            
+            //use program
+            gl.useProgram(glProgram); 
+            //en cada momento solo se ejcuta de un solo programa.
+            
+        }
+        
+        function makeShader(src, type){
+
+            //compile the vertex shader
+            var shader = gl.createShader(type);
+            gl.shaderSource(shader, src);
+            gl.compileShader(shader);
+
+            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                alert("Error compiling shader: " + gl.getShaderInfoLog(shader));
+            }
+            return shader;
+        }
+        
+        function setupBuffers(){
+            
+            //defino las coordenadas de los vertices en arrays, 
+            // rango de coordenadas de -1 a 1 de izq a derecha. mismo rriba para abajo
+            var data = [
+
+                -0.5,-0.5, 0.0,    // vértice 1, triangulo 1
+                -0.5, 0.5, 0.0,    // vértice 2, triangulo 1
+                0.0,-0.5, 0.0,     // vértice 3, triangulo 1
+
+                0.0, 0.5, 0.0,     // vértice 1, triangulo 2
+                0.5,-0.5, 0.0,     // vértice 2, triangulo 2
+                0.5, 0.5, 0.0      // vértice 3, triangulo 2
+            ];
+            
+            trianglesVerticeBuffer = gl.createBuffer();                               // creo el buffer,son espacios de memoria en la gpu
+            gl.bindBuffer(gl.ARRAY_BUFFER, trianglesVerticeBuffer);                   // activo el buffer, comando bind una vez que cree tal recurso activalo 
+                                                            //usando la ref que me tiro createBuffer, 
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);   // cargo los datos en el buffer, los cargo en la memoria de la gpu
+                                    // a nivel de hardware va  apasar via la APi webGL por el buff psi hasta la placa de video 
+
+
+            //COLORES, se cargan con la misma longitud 
+            var color = [   
+                1.0, 0.0, 0.0,      // r,g,b vertice 1
+                1.0, 1.0, 0.0,
+                0.0, 1.0, 0.0,
+                
+                0.0, 1.0, 1.0,
+                0.0, 0.0, 1.0,
+                1.0, 0.0, 1.0
+            ];
+            
+            trianglesColorBuffer = gl.createBuffer();   //aca creo un buffer nuevo pero para los colores de los triangulos
+            gl.bindBuffer(gl.ARRAY_BUFFER, trianglesColorBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(color), gl.STATIC_DRAW);    
+        }
+        
+        function drawScene(){  
+
+            //ACA tenemos que empezar a trabajar en vincular el programa que habiamos ocmpilado con los datos.
+            //
+
+            vertexPositionAttribute = gl.getAttribLocation(glProgram, "aVertexPosition");
+            gl.enableVertexAttribArray(vertexPositionAttribute);
+            gl.bindBuffer(gl.ARRAY_BUFFER, trianglesVerticeBuffer);
+            gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
+
+            vertexColorAttribute = gl.getAttribLocation(glProgram, "aVertexColor");
+            gl.enableVertexAttribArray(vertexColorAttribute);
+            gl.bindBuffer(gl.ARRAY_BUFFER, trianglesColorBuffer);
+            gl.vertexAttribPointer(vertexColorAttribute, 3, gl.FLOAT, false, 0, 0);
+
+            gl.drawArrays(gl.TRIANGLES, 0,6);
+            //consumi de los buffers 6 elementos desde 0, y que los interprete como triangulos,
+            //le puedo decir como lo interpreta con triangles  
+            //los parametros me indican el indice y el sgte cuantos a partir del indice osea se suman 
+
+        }
+
+        window.onload=initWebGL;
+
+    </script>        
+</body>
+</html>

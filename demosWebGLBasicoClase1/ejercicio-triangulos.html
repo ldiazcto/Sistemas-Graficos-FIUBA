@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Ejercicio Triangulo</title>
+    <style>
+        body{ 
+            background-color: grey; 
+            font-family:Arial, Helvetica, sans-serif;                
+        }
+        canvas{ 
+            background-color: white; 
+        }
+        textarea{ 
+            background-color: black; 
+            background-color: white;
+        }
+        #titulo{
+            text-align:center;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="titulo">		
+
+        <h1>Sistemas Gráficos</h1>
+        
+        <h2>WebGL Ejemplo de Triangulos - Vertex Array Objects "VBOs"</h2>
+
+        <canvas id="my-canvas" width="900" height="500">
+            Your browser does not support the HTML5 canvas element.
+        </canvas>			
+
+    </div>
+
+    <!------------------ Los shaders --------------------->
+    <!-- vertex shader -->
+    <script id="shader-vs" type="x-shader/x-vertex">
+        attribute vec3 aVertexPosition;
+        attribute vec3 aVertexColor;
+
+        varying highp vec4 vColor;
+
+        void main(void){
+            gl_Position = vec4(aVertexPosition, 1.50);
+            vColor = vec4(aVertexColor, 1.0);
+        }
+    </script>
+
+    <!-- fragment shader -->
+    <script id="shader-fs">
+        
+
+    // CODE figure
+    </script>
+ 
+    <script>
+        var gl = null,
+            canvas = null,
+            glProgram = null,
+            fragmentShader = null,
+            vertexShader = null;
+            
+        var vertexPositionAttribute = null,
+            trianglesVerticeBuffer = null,
+            vertexColorAttribute = null,
+            trianglesColorBuffer = null;
+
+    function initWebGL(){
+
+        canvas = document.getElementById("my-canvas");
+        try{
+                gl = canvas.getContext("webgl");                    
+            } catch(e) {
+                alert("Error al obtener el contexto");
+            }
+        
+            if(gl){
+
+                setupWebGL(); //configuro nuestro entorno GL
+                initShaders(); //
+                setupBuffers(); //donde cargamos info que queremos trabajar
+                drawScene();    //operacion de dibujado 
+
+            }else{    
+                alert("Error: Su browser no soporta WebGL.");
+            }
+    }
+
+    function setupWebGL(){ //inicializa la pantalla con color de fondo 
+
+        //set the clear color
+        gl.clearColor(0.1, 0.1, 0.2, 1.0);     
+        gl.clear(gl.COLOR_BUFFER_BIT);     
+
+        gl.viewport(0, 0, canvas.width, canvas.height); //zona de dibuhjo
+        //viweport si quiero dibujar en un area parcial 
+
+    }
+
+    function initShaders(){
+
+    }
+
+
+
+
+
+    </script>
+
+</body>
+</html>
