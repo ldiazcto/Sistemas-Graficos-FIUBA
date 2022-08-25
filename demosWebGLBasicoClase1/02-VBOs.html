@@ -37,7 +37,10 @@
     <!-- sombreador de vertices -->
     <!-- reciben la informacion de los vertices pos y colores y la vanba manipular  -->
     
-    <!-- vec3 en aVertexPosition por 3 dimensiones -->
+    <!-- vec3 en aVertexPosition por 3 vertices 
+    Lo que hace esto es generando una salida para cada vertice que despues sera recibida
+    por el programa de fragmentos 
+    -->
     <script id="shader-vs" type="x-shader/x-vertex">
         attribute vec3 aVertexPosition; 
         attribute vec3 aVertexColor;
@@ -52,6 +55,7 @@
 
     <!-- ************       fragment shader       **************** !-->        
 
+    <!-- este se encarga de pintar los pixeles de la pantalla -->
     <script id="shader-fs" type="x-shader/x-fragment">
         varying highp vec4 vColor;
         void main(void) {
@@ -65,12 +69,21 @@
             canvas = null,
             glProgram = null,
             fragmentShader = null,
-            vertexShader = null;
+            vertexShader = null,
+            gl_FragColor = null;
+
             
         var vertexPositionAttribute = null,
             trianglesVerticeBuffer = null,
             vertexColorAttribute = null,
             trianglesColorBuffer = null;
+            
+
+        var amarillo = [1, 0.7, 0],
+			magenta = [252/255, 40/255, 252/255],
+			verde = [73/255, 218/255, 39/255],
+			blanco = [1.0, 1.0, 1.0];
+
             
         function initWebGL(){
 
@@ -97,7 +110,7 @@
         function setupWebGL(){ //inicializa la pantalla con color de fondo 
 
             //set the clear color
-            gl.clearColor(0.1, 0.1, 0.2, 1.0);     
+            gl.clearColor(0.1, 0.1, 1.0, 1.0);     
             gl.clear(gl.COLOR_BUFFER_BIT);     
             
             gl.viewport(0, 0, canvas.width, canvas.height); //zona de dibuhjo
@@ -155,14 +168,13 @@
             //defino las coordenadas de los vertices en arrays, 
             // rango de coordenadas de -1 a 1 de izq a derecha. mismo rriba para abajo
             var data = [
+                -0.1, 0.3, 0.0,     //vertice 1
+                -0.3, 0.08, 0.0,    //vertice 2
+                -0.1, 0.08, 0.0,     // vértice 3, triangulo 1 ****
 
-                -0.5,-0.5, 0.0,    // vértice 1, triangulo 1
-                -0.5, 0.5, 0.0,    // vértice 2, triangulo 1
-                0.0,-0.5, 0.0,     // vértice 3, triangulo 1
-
-                0.0, 0.5, 0.0,     // vértice 1, triangulo 2
-                0.5,-0.5, 0.0,     // vértice 2, triangulo 2
-                0.5, 0.5, 0.0      // vértice 3, triangulo 2
+                0.3, 0.4, 0.0,     // vértice 1, triangulo 2
+                0.1, 0.2, 0.0,     // vértice 2, triangulo 2 **********
+                0.3, 0.2, 0.0      // vértice 3, triangulo 2
             ];
             
             trianglesVerticeBuffer = gl.createBuffer();                               // creo el buffer,son espacios de memoria en la gpu
@@ -174,14 +186,16 @@
 
             //COLORES, se cargan con la misma longitud 
             var color = [   
-                1.0, 0.0, 0.0,      // r,g,b vertice 1
-                1.0, 1.0, 0.0,
-                0.0, 1.0, 0.0,
+            ...amarillo,      // r,g,b vertice 1
+            ...amarillo,
+            ...amarillo,
                 
-                0.0, 1.0, 1.0,
-                0.0, 0.0, 1.0,
-                1.0, 0.0, 1.0
+            ...amarillo,
+            ...amarillo,
+            ...amarillo
             ];
+
+
             
             trianglesColorBuffer = gl.createBuffer();   //aca creo un buffer nuevo pero para los colores de los triangulos
             gl.bindBuffer(gl.ARRAY_BUFFER, trianglesColorBuffer);
