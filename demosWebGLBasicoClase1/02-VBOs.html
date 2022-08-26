@@ -80,8 +80,8 @@
             
 
         var amarillo = [1, 0.7, 0],
-			magenta = [252/255, 40/255, 252/255],
-			verde = [73/255, 218/255, 39/255],
+			magenta = [1, 0.3, 1],
+			verde = [0.6,0.9,0],
 			blanco = [1.0, 1.0, 1.0];
 
             
@@ -168,10 +168,40 @@
             //defino las coordenadas de los vertices en arrays, 
             // rango de coordenadas de -1 a 1 de izq a derecha. mismo rriba para abajo
             var data = [
+
+                //triangulo amarillo 1
                 -0.1, 0.3, 0.0,     //vertice 1
                 -0.3, 0.08, 0.0,    //vertice 2
-                -0.1, 0.08, 0.0,     // vértice 3, triangulo 1 ****
+                -0.1, 0.08, 0.0,    // vértice 3, triangulo 1 ****
 
+                //triangulos magentas
+                -0.1, 0.08, 0.0,     //vertice 1 , trapecio 1
+                -0.3, 0.08, 0.0,    //vertice 2 , trapecio 1
+                -0.1, -0.08, 0.0,    //vertice 3, trapecio 1
+                
+                0.1, -0.1, 0.0,
+                0.1, -0.1, 0.0,
+                0.1, -0.1, 0.0,
+
+                //triangulos blancos
+                0.1, -0.08, 0.0,
+                -0.1, -0.3, 0.0,
+                0.1, -0.3, 0.0,
+
+                0.1, -0.08, 0.0,
+                -0.1, -0.3, 0.0,
+                -0.1, -0.08, 0.0,
+
+                //triangulos verdes
+                -0.1,-0.08, 0.0,
+                -0.3, -0.3, 0.0,
+                -0.1, -0.3, 0.0,
+
+                0.3, -0.08, 0.0,
+                0.1, -0.3, 0.0,
+                0.3, -0.3, 0.0,
+
+                //triangulo amarillo 2
                 0.3, 0.4, 0.0,     // vértice 1, triangulo 2
                 0.1, 0.2, 0.0,     // vértice 2, triangulo 2 **********
                 0.3, 0.2, 0.0      // vértice 3, triangulo 2
@@ -189,7 +219,31 @@
             ...amarillo,      // r,g,b vertice 1
             ...amarillo,
             ...amarillo,
+
+            ...magenta,
+            ...magenta,
+            ...magenta,
+            
+            ...magenta,
+            ...magenta,
+            ...magenta,
                 
+            ...blanco,
+            ...blanco,
+            ...blanco,
+
+            ...blanco,
+            ...blanco,
+            ...blanco,
+
+            ...verde,
+            ...verde,
+            ...verde,
+
+            ...verde,
+            ...verde,
+            ...verde,
+
             ...amarillo,
             ...amarillo,
             ...amarillo
@@ -217,7 +271,7 @@
             gl.bindBuffer(gl.ARRAY_BUFFER, trianglesColorBuffer);
             gl.vertexAttribPointer(vertexColorAttribute, 3, gl.FLOAT, false, 0, 0);
 
-            gl.drawArrays(gl.TRIANGLES, 0,6);
+            gl.drawArrays(gl.TRIANGLES, 0, 8*10);
             //consumi de los buffers 6 elementos desde 0, y que los interprete como triangulos,
             //le puedo decir como lo interpreta con triangles  
             //los parametros me indican el indice y el sgte cuantos a partir del indice osea se suman 
