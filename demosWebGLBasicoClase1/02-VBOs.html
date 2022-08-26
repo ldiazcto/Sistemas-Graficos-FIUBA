@@ -179,9 +179,17 @@
                 -0.3, 0.08, 0.0,    //vertice 2 , trapecio 1
                 -0.1, -0.08, 0.0,    //vertice 3, trapecio 1
                 
-                0.1, -0.1, 0.0,
-                0.1, -0.1, 0.0,
-                0.1, -0.1, 0.0,
+                -0.1,-0.08, 0.0,
+                -0.3, -0.3, 0.0,
+                -0.3, 0.08, 0.0,
+
+                0.3, -0.08, 0.0,
+                0.1, 0.2, 0.0,
+                0.3, 0.2, 0.0,
+
+                0.3, -0.08, 0.0,
+                0.1, -0.3, 0.0,
+                0.1, 0.2, 0.0,
 
                 //triangulos blancos
                 0.1, -0.08, 0.0,
@@ -224,6 +232,14 @@
             ...magenta,
             ...magenta,
             
+            ...magenta,
+            ...magenta,
+            ...magenta,
+
+            ...magenta,
+            ...magenta,
+            ...magenta,
+
             ...magenta,
             ...magenta,
             ...magenta,
@@ -271,7 +287,7 @@
             gl.bindBuffer(gl.ARRAY_BUFFER, trianglesColorBuffer);
             gl.vertexAttribPointer(vertexColorAttribute, 3, gl.FLOAT, false, 0, 0);
 
-            gl.drawArrays(gl.TRIANGLES, 0, 8*10);
+            gl.drawArrays(gl.TRIANGLES, 0, 3*10);
             //consumi de los buffers 6 elementos desde 0, y que los interprete como triangulos,
             //le puedo decir como lo interpreta con triangles  
             //los parametros me indican el indice y el sgte cuantos a partir del indice osea se suman 
